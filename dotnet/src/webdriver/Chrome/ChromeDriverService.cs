@@ -21,6 +21,7 @@ using System.Globalization;
 using System.Text;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Chromium;
+using System.Net;
 
 namespace OpenQA.Selenium.Chrome
 {
@@ -39,30 +40,33 @@ namespace OpenQA.Selenium.Chrome
         /// <param name="executablePath">The full path to the ChromeDriver executable.</param>
         /// <param name="executableFileName">The file name of the ChromeDriver executable.</param>
         /// <param name="port">The port on which the ChromeDriver executable should listen.</param>
-        private ChromeDriverService(string executablePath, string executableFileName, int port)
-            : base(executablePath, executableFileName, port, ChromeDriverDownloadUrl)
+        /// <param name="user">The network creditials to run the browser as.</param>
+        private ChromeDriverService(string executablePath, string executableFileName, int port, NetworkCredential user = null)
+            : base(executablePath, executableFileName, port, ChromeDriverDownloadUrl, user)
         {
         }
 
         /// <summary>
         /// Creates a default instance of the ChromeDriverService.
         /// </summary>
+        /// <param name="user">The network creditials to run the browser as.</param>
         /// <returns>A ChromeDriverService that implements default settings.</returns>
-        public static ChromeDriverService CreateDefaultService()
+        public static ChromeDriverService CreateDefaultService(NetworkCredential user = null)
         {
             string serviceDirectory = DriverService.FindDriverServiceExecutable(ChromiumDriverServiceFileName(DefaultChromeDriverServiceExecutableName),
                                                                                 ChromeDriverDownloadUrl);
-            return CreateDefaultService(serviceDirectory);
+            return CreateDefaultService(serviceDirectory, user);
         }
 
         /// <summary>
         /// Creates a default instance of the ChromeDriverService using a specified path to the ChromeDriver executable.
         /// </summary>
         /// <param name="driverPath">The directory containing the ChromeDriver executable.</param>
+        /// <param name="user">The network creditials to run the browser as.</param>
         /// <returns>A ChromeDriverService using a random port.</returns>
-        public static ChromeDriverService CreateDefaultService(string driverPath)
+        public static ChromeDriverService CreateDefaultService(string driverPath, NetworkCredential user = null)
         {
-            return CreateDefaultService(driverPath, ChromiumDriverServiceFileName(DefaultChromeDriverServiceExecutableName));
+            return CreateDefaultService(driverPath, ChromiumDriverServiceFileName(DefaultChromeDriverServiceExecutableName), user);
         }
 
         /// <summary>
@@ -70,10 +74,11 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         /// <param name="driverPath">The directory containing the ChromeDriver executable.</param>
         /// <param name="driverExecutableFileName">The name of the ChromeDriver executable file.</param>
+        /// <param name="user">The network creditials to run the browser as.</param>
         /// <returns>A ChromeDriverService using a random port.</returns>
-        public static ChromeDriverService CreateDefaultService(string driverPath, string driverExecutableFileName)
+        public static ChromeDriverService CreateDefaultService(string driverPath, string driverExecutableFileName, NetworkCredential user = null)
         {
-            return new ChromeDriverService(driverPath, driverExecutableFileName, PortUtilities.FindFreePort());
+            return new ChromeDriverService(driverPath, driverExecutableFileName, PortUtilities.FindFreePort(), user);
         }
 
     }

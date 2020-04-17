@@ -18,6 +18,7 @@
 
 using System;
 using System.Globalization;
+using System.Net;
 using System.Text;
 using OpenQA.Selenium.Internal;
 
@@ -43,8 +44,9 @@ namespace OpenQA.Selenium.IE
         /// <param name="executablePath">The full path to the IEDriverServer executable.</param>
         /// <param name="executableFileName">The file name of the IEDriverServer executable.</param>
         /// <param name="port">The port on which the IEDriverServer executable should listen.</param>
-        private InternetExplorerDriverService(string executablePath, string executableFileName, int port)
-            : base(executablePath, port, executableFileName, InternetExplorerDriverDownloadUrl)
+        /// <param name="user">The network creditials to run the browser as.</param>
+        private InternetExplorerDriverService(string executablePath, string executableFileName, int port, NetworkCredential user = null)
+            : base(executablePath, port, executableFileName, InternetExplorerDriverDownloadUrl, user)
         {
         }
 
@@ -146,21 +148,23 @@ namespace OpenQA.Selenium.IE
         /// <summary>
         /// Creates a default instance of the InternetExplorerDriverService.
         /// </summary>
+        /// <param name="user">The network creditials to run the browser as.</param>
         /// <returns>A InternetExplorerDriverService that implements default settings.</returns>
-        public static InternetExplorerDriverService CreateDefaultService()
+        public static InternetExplorerDriverService CreateDefaultService(NetworkCredential user = null)
         {
             string serviceDirectory = DriverService.FindDriverServiceExecutable(InternetExplorerDriverServiceFileName, InternetExplorerDriverDownloadUrl);
-            return CreateDefaultService(serviceDirectory);
+            return CreateDefaultService(serviceDirectory, user);
         }
 
         /// <summary>
         /// Creates a default instance of the InternetExplorerDriverService using a specified path to the IEDriverServer executable.
         /// </summary>
         /// <param name="driverPath">The directory containing the IEDriverServer executable.</param>
+        /// <param name="user">The network creditials to run the browser as.</param>
         /// <returns>A InternetExplorerDriverService using a random port.</returns>
-        public static InternetExplorerDriverService CreateDefaultService(string driverPath)
+        public static InternetExplorerDriverService CreateDefaultService(string driverPath, NetworkCredential user = null)
         {
-            return CreateDefaultService(driverPath, InternetExplorerDriverServiceFileName);
+            return CreateDefaultService(driverPath, InternetExplorerDriverServiceFileName, user);
         }
 
         /// <summary>
@@ -168,10 +172,11 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         /// <param name="driverPath">The directory containing the IEDriverServer executable.</param>
         /// <param name="driverExecutableFileName">The name of the IEDriverServer executable file.</param>
+        /// <param name="user">The network creditials to run the browser as.</param>
         /// <returns>A InternetExplorerDriverService using a random port.</returns>
-        public static InternetExplorerDriverService CreateDefaultService(string driverPath, string driverExecutableFileName)
+        public static InternetExplorerDriverService CreateDefaultService(string driverPath, string driverExecutableFileName, NetworkCredential user = null)
         {
-            return new InternetExplorerDriverService(driverPath, driverExecutableFileName, PortUtilities.FindFreePort());
+            return new InternetExplorerDriverService(driverPath, driverExecutableFileName, PortUtilities.FindFreePort(), user);
         }
     }
 }

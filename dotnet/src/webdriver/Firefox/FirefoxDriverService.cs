@@ -46,8 +46,9 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="executablePath">The full path to the Firefox driver executable.</param>
         /// <param name="executableFileName">The file name of the Firefox driver executable.</param>
         /// <param name="port">The port on which the Firefox driver executable should listen.</param>
-        private FirefoxDriverService(string executablePath, string executableFileName, int port)
-            : base(executablePath, port, executableFileName, FirefoxDriverDownloadUrl)
+        /// <param name="user">The network creditials to run the browser as.</param>
+        private FirefoxDriverService(string executablePath, string executableFileName, int port, NetworkCredential user = null)
+            : base(executablePath, port, executableFileName, FirefoxDriverDownloadUrl, user)
         {
         }
 
@@ -210,21 +211,23 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Creates a default instance of the FirefoxDriverService.
         /// </summary>
+        /// <param name="user">The network creditials to run the browser as.</param>
         /// <returns>A FirefoxDriverService that implements default settings.</returns>
-        public static FirefoxDriverService CreateDefaultService()
+        public static FirefoxDriverService CreateDefaultService(NetworkCredential user = null)
         {
             string serviceDirectory = DriverService.FindDriverServiceExecutable(FirefoxDriverServiceFileName(), FirefoxDriverDownloadUrl);
-            return CreateDefaultService(serviceDirectory);
+            return CreateDefaultService(serviceDirectory, user);
         }
 
         /// <summary>
         /// Creates a default instance of the FirefoxDriverService using a specified path to the Firefox driver executable.
         /// </summary>
         /// <param name="driverPath">The directory containing the Firefox driver executable.</param>
+        /// <param name="user">The network creditials to run the browser as.</param>
         /// <returns>A FirefoxDriverService using a random port.</returns>
-        public static FirefoxDriverService CreateDefaultService(string driverPath)
+        public static FirefoxDriverService CreateDefaultService(string driverPath, NetworkCredential user = null)
         {
-            return CreateDefaultService(driverPath, FirefoxDriverServiceFileName());
+            return CreateDefaultService(driverPath, FirefoxDriverServiceFileName(), user);
         }
 
         /// <summary>
@@ -232,10 +235,11 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="driverPath">The directory containing the Firefox driver executable.</param>
         /// <param name="driverExecutableFileName">The name of the Firefox driver executable file.</param>
+        /// <param name="user">The network creditials to run the browser as.</param>
         /// <returns>A FirefoxDriverService using a random port.</returns>
-        public static FirefoxDriverService CreateDefaultService(string driverPath, string driverExecutableFileName)
+        public static FirefoxDriverService CreateDefaultService(string driverPath, string driverExecutableFileName, NetworkCredential user = null)
         {
-            return new FirefoxDriverService(driverPath, driverExecutableFileName, PortUtilities.FindFreePort());
+            return new FirefoxDriverService(driverPath, driverExecutableFileName, PortUtilities.FindFreePort(), user);
         }
 
         /// <summary>

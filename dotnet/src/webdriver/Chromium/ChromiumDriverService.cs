@@ -18,6 +18,7 @@
 
 using System;
 using System.Globalization;
+using System.Net;
 using System.Text;
 using OpenQA.Selenium.Internal;
 
@@ -45,8 +46,9 @@ namespace OpenQA.Selenium.Chromium
         /// <param name="executableFileName">The file name of the ChromeDriver executable.</param>
         /// <param name="port">The port on which the ChromeDriver executable should listen.</param>
         /// <param name="downloadUrl">The url that ChromiumDriver should be downloaded from.</param>
-        protected ChromiumDriverService(string executablePath, string executableFileName, int port, Uri downloadUrl)
-            : base(executablePath, port, executableFileName, downloadUrl)
+        /// <param name="user">The network creditials to run the browser as.</param>
+        protected ChromiumDriverService(string executablePath, string executableFileName, int port, Uri downloadUrl, NetworkCredential user = null)
+            : base(executablePath, port, executableFileName, downloadUrl, user)
         {
         }
 

@@ -40,6 +40,7 @@ namespace OpenQA.Selenium
         private bool hideCommandPromptWindow;
         private bool isDisposed;
         private Process driverServiceProcess;
+        private NetworkCredential user;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DriverService"/> class.
@@ -48,13 +49,14 @@ namespace OpenQA.Selenium
         /// <param name="port">The port on which the driver executable should listen.</param>
         /// <param name="driverServiceExecutableName">The file name of the driver service executable.</param>
         /// <param name="driverServiceDownloadUrl">A URL at which the driver service executable may be downloaded.</param>
+        /// <param name="user">The network creditials to run the browser as.</param>
         /// <exception cref="ArgumentException">
         /// If the path specified is <see langword="null"/> or an empty string.
         /// </exception>
         /// <exception cref="DriverServiceNotFoundException">
         /// If the specified driver service executable does not exist in the specified directory.
         /// </exception>
-        protected DriverService(string servicePath, int port, string driverServiceExecutableName, Uri driverServiceDownloadUrl)
+        protected DriverService(string servicePath, int port, string driverServiceExecutableName, Uri driverServiceDownloadUrl, NetworkCredential user = null)
         {
             if (string.IsNullOrEmpty(servicePath))
             {
@@ -70,6 +72,7 @@ namespace OpenQA.Selenium
             this.driverServicePath = servicePath;
             this.driverServiceExecutableName = driverServiceExecutableName;
             this.driverServicePort = port;
+            this.user = user;
         }
 
         /// <summary>
@@ -261,6 +264,13 @@ namespace OpenQA.Selenium
             }
 
             this.driverServiceProcess = new Process();
+            if (this.user != null)
+            {
+                this.driverServiceProcess.StartInfo.UserName = user.UserName;
+                this.driverServiceProcess.StartInfo.Password = user.SecurePassword;
+                this.driverServiceProcess.StartInfo.Domain = user.Domain;
+                this.driverServiceProcess.StartInfo.LoadUserProfile = true;
+            }
             this.driverServiceProcess.StartInfo.FileName = Path.Combine(this.driverServicePath, this.driverServiceExecutableName);
             this.driverServiceProcess.StartInfo.Arguments = this.CommandLineArguments;
             this.driverServiceProcess.StartInfo.UseShellExecute = false;
